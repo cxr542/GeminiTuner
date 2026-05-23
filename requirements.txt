@@ -1,0 +1,2 @@
+# PDF compiler — SSRF fix: weasyprint >= 68.0 (requires Python >= 3.10)
+weasyprint>=68.0,<69

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeminiTuner — Privacy Policy</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #1e293b; }
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.1rem; margin-top: 1.5rem; }
+  </style>
+</head>
+<body>
+  <h1>GeminiTuner Privacy Policy</h1>
+  <p><strong>Last updated:</strong> May 23, 2026</p>
+
+  <h2>Overview</h2>
+  <p>
+    GeminiTuner is a Chrome extension that displays estimated token usage and cost while you use
+    <a href="https://gemini.google.com">gemini.google.com</a>. We designed it so your data stays on your device.
+  </p>
+
+  <h2>Data we collect</h2>
+  <p>We do <strong>not</strong> operate a backend server and do <strong>not</strong> collect personal data on our servers.</p>
+  <ul>
+    <li><strong>Usage counters</strong> (tokens, estimated cost, budget settings) are stored locally via <code>chrome.storage.local</code> on your browser only.</li>
+    <li><strong>API key</strong> (optional): If you enter a Google AI Studio API key in the extension popup, it is saved only in <code>chrome.storage.local</code> on your device. It is never sent to GeminiTuner developers.</li>
+  </ul>
+
+  <h2>Data we do not collect</h2>
+  <ul>
+    <li>We do not receive your Gemini conversations, prompts, or responses.</li>
+    <li>We do not sell or share user data with third parties.</li>
+  </ul>
+
+  <h2>Permissions</h2>
+  <ul>
+    <li><strong>gemini.google.com</strong> — Inject the monitoring panel and read API responses on that site to estimate token usage.</li>
+    <li><strong>storage</strong> — Save settings and usage totals locally.</li>
+    <li><strong>notifications</strong> — Show local budget alerts.</li>
+  </ul>
+
+  <h2>Third-party services</h2>
+  <p>
+    The extension runs only on Google Gemini web pages. Google's own privacy policy applies to your use of Gemini.
+  </p>
+
+  <h2>Contact</h2>
+  <p>Questions about this policy: contact the developer email listed on the Chrome Web Store listing.</p>
+</body>
+</html>

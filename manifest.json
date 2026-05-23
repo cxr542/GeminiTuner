@@ -1,0 +1,59 @@
+{
+  "manifest_version": 3,
+  "name": "GeminiTuner",
+  "version": "1.0.7",
+  "description": "Monitor Gemini token usage and estimated cost on gemini.google.com with a FinOps side panel.",
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+
+  "permissions": [
+    "storage",
+    "notifications",
+    "scripting"
+  ],
+
+  "host_permissions": [
+    "https://gemini.google.com/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://aistudio.google.com/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "GeminiTuner - FinOps Monitor",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
+    }
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://gemini.google.com/*"],
+      "js": ["page-hook.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://gemini.google.com/*"],
+      "js": ["currency.js", "dom-meter.js", "content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://aistudio.google.com/*"],
+      "js": ["aistudio-sync.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

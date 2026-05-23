@@ -1,0 +1,368 @@
+/* styles.css — GeminiTuner Injected Side Panel Styles
+   Scoped with #gemini-tuner-panel prefix to avoid conflicts with Gemini web app CSS */
+
+/* ── Panel Root ─────────────────────────────────────────────────── */
+#gemini-tuner-panel {
+  position: fixed;
+  bottom: 24px;
+  right: 16px;
+  top: auto;
+  left: auto;
+  transform: none;
+  width: 248px;
+  background: rgba(11, 19, 32, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  padding: 0;
+  z-index: 99999;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  color: #f8fafc;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(168, 85, 247, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  overflow: hidden;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  user-select: none;
+}
+
+#gemini-tuner-panel.gt-dragging {
+  transition: none;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55);
+}
+
+#gemini-tuner-panel.gt-panel-warn {
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(239, 68, 68, 0.15);
+  animation: gt-warn-pulse 2s infinite ease-in-out;
+}
+
+@keyframes gt-warn-pulse {
+  0%,100% { border-color: rgba(239, 68, 68, 0.3); }
+  50%      { border-color: rgba(239, 68, 68, 0.7); }
+}
+
+/* Top gradient line */
+#gemini-tuner-panel::before {
+  content: '';
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.4), rgba(56, 189, 248, 0.4), transparent);
+}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+#gt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  cursor: grab;
+  touch-action: none;
+}
+
+#gt-header.gt-dragging {
+  cursor: grabbing;
+}
+
+#gt-drag-hint {
+  font-size: 8px;
+  color: #334155;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  margin-top: 1px;
+}
+
+/* ── Hero (캐릭터 + 한 줄 안내) ─────────────────────────────────── */
+.gt-hero {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 10px 4px;
+  padding: 10px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+}
+
+.gt-char-wrap {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.gt-char-wrap svg {
+  width: 100%;
+  height: 100%;
+  animation: gt-float 3s ease-in-out infinite;
+}
+
+@keyframes gt-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.gt-char-happy { display: block; }
+.gt-char-warn { display: none; }
+.gt-char-wrap.gt-mood-warn .gt-char-happy { display: none; }
+.gt-char-wrap.gt-mood-warn .gt-char-warn { display: block; }
+
+.gt-hero-text {
+  flex: 1;
+  min-width: 0;
+}
+
+#gt-char-msg {
+  font-size: 11px;
+  font-weight: 600;
+  color: #e2e8f0;
+  line-height: 1.35;
+}
+
+#gt-char-hint {
+  font-size: 10px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+#gt-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+#gt-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #38bdf8, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+}
+
+#gt-badge {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 100px;
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  transition: background 0.3s, color 0.3s;
+}
+
+#gt-badge.gt-badge-warn {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+/* ── Warning Bar ─────────────────────────────────────────────────── */
+#gt-warning {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 12px 0;
+  padding: 8px 10px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 10px;
+  font-size: 10px;
+  color: #f87171;
+  line-height: 1.4;
+}
+
+#gt-warning.gt-hidden { display: none; }
+
+/* ── Section Label ───────────────────────────────────────────────── */
+.gt-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #475569;
+  padding: 10px 14px 4px;
+}
+
+/* ── Stat Card ───────────────────────────────────────────────────── */
+.gt-stat-card {
+  margin: 0 10px 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ── Big Value ───────────────────────────────────────────────────── */
+.gt-big-val {
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #f8fafc;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.gt-sub {
+  font-size: 10px;
+  color: #475569;
+}
+
+/* ── Cost Row ────────────────────────────────────────────────────── */
+.gt-cost-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.gt-cost-values {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gt-cost-krw {
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: -0.02em;
+}
+
+.gt-limit-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.gt-limit-krw {
+  font-size: 10px;
+  color: #64748b;
+}
+
+.gt-limit {
+  font-size: 11px;
+  color: #64748b;
+  padding-bottom: 2px;
+}
+
+/* ── Progress Bar ────────────────────────────────────────────────── */
+.gt-bar-wrap {
+  height: 5px;
+  background: #1e293b;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.gt-bar {
+  height: 100%;
+  background: #a855f7;
+  border-radius: 100px;
+  box-shadow: 0 0 6px rgba(168, 85, 247, 0.5);
+  transition: width 0.5s ease, background 0.3s ease;
+}
+
+.gt-bar.yellow {
+  background: #fbbf24;
+  box-shadow: 0 0 6px rgba(251, 191, 36, 0.4);
+}
+
+.gt-bar.red {
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+}
+
+.gt-pct {
+  font-size: 10px;
+  color: #475569;
+}
+
+/* ── Last Turn Row ───────────────────────────────────────────────── */
+.gt-turn-row {
+  display: flex;
+  gap: 6px;
+}
+
+.gt-turn-item {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+.gt-turn-label {
+  font-size: 9px;
+  color: #475569;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.gt-turn-val {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #c084fc;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────── */
+.gt-api-status {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.gt-api-big {
+  font-size: 18px;
+}
+
+.gt-api-cost-block {
+  margin-bottom: 4px;
+}
+
+.gt-link-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 8px;
+  background: rgba(168, 85, 247, 0.08);
+  color: #c084fc;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.gt-link-btn:hover {
+  background: rgba(168, 85, 247, 0.15);
+}
+
+#gt-api-section.gt-hidden {
+  display: none;
+}
+
+#gt-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 8px 14px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 9px;
+  color: #334155;
+}

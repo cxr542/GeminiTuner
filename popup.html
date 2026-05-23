@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeminiTuner</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 320px;
+      min-height: 480px;
+      background: #0b1320;
+      color: #f8fafc;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-logo {
+      width: 22px;
+      height: 22px;
+    }
+    .header-title {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #38bdf8, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .badge-live {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 100px;
+      background: rgba(168,85,247,0.15);
+      color: #c084fc;
+    }
+
+    /* ── Section Labels ── */
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #64748b;
+      padding: 16px 20px 6px;
+    }
+
+    /* ── Quota Cards (Gemini Widget) ── */
+    .quota-card {
+      margin: 0 14px 6px;
+      background: #111c2d;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 14px 16px;
+    }
+
+    .quota-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .quota-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quota-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Gemini Sparkle SVG Character */
+    .char-wrap {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .char-wrap svg {
+      width: 100%;
+      height: 100%;
+      animation: float 3s ease-in-out infinite;
+    }
+    .char-badge {
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      color: #0b1320;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 0px 5px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-3px); }
+    }
+
+    .quota-info { flex: 1; }
+    .quota-label { font-size: 11px; color: #64748b; margin-bottom: 1px; }
+    .quota-val {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .quota-val.yellow { color: #fbbf24; }
+    .quota-val.purple { color: #c084fc; }
+    .quota-val.red    { color: #f87171; animation: blink 1.2s infinite ease-in-out; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+    .quota-bar-wrap {
+      height: 5px;
+      background: #1e293b;
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .quota-bar {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.6s ease;
+    }
+    .quota-bar.yellow { background: #fbbf24; box-shadow: 0 0 6px rgba(251,191,36,0.4); }
+    .quota-bar.purple { background: #a855f7; box-shadow: 0 0 6px rgba(168,85,247,0.4); }
+    .quota-bar.red    { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.5); }
+
+    .quota-reset {
+      font-size: 10px;
+      color: #475569;
+      text-align: right;
+    }
+
+    .divider-v {
+      width: 1px;
+      background: rgba(255,255,255,0.04);
+      align-self: stretch;
+      margin: 0 -6px;
+    }
+
+    /* ── Cost Card ── */
+    .cost-card {
+      margin: 0 14px 6px;
+      background: #111c2d;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .cost-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .cost-val {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+    }
+    .cost-limit {
+      font-size: 11px;
+      color: #64748b;
+    }
+    .cost-krw {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    .cost-limit-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+    .cost-limit-krw {
+      font-size: 10px;
+      color: #64748b;
+    }
+    .cost-bar-wrap {
+      height: 5px;
+      background: #1e293b;
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .cost-bar {
+      height: 100%;
+      background: #a855f7;
+      border-radius: 100px;
+      transition: width 0.6s ease;
+      box-shadow: 0 0 6px rgba(168,85,247,0.4);
+    }
+    .cost-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #475569;
+    }
+
+    /* ── API Key Settings Section ── */
+    .settings-card {
+      margin: 0 14px 14px;
+      background: #111c2d;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .settings-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .settings-row label {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .settings-row input {
+      background: #0b1320;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      color: #f8fafc;
+      font-size: 12px;
+      padding: 7px 10px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .settings-row input:focus {
+      border-color: #a855f7;
+    }
+    .settings-row input::placeholder { color: #334155; }
+
+    /* ── Budget Row ── */
+    .budget-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    /* ── Buttons ── */
+    .btn-save {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #8b5cf6, #d946ef);
+      color: #fff;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      box-shadow: 0 4px 12px rgba(168,85,247,0.25);
+    }
+    .btn-save:hover  { opacity: 0.9; transform: translateY(-1px); }
+    .btn-save:active { transform: translateY(0); }
+
+    .save-status {
+      font-size: 11px;
+      text-align: center;
+      color: #34d399;
+      min-height: 16px;
+    }
+
+    /* ── Warning Banner ── */
+    .warning-banner {
+      margin: 0 14px 6px;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: #f87171;
+      display: none;
+      gap: 6px;
+      align-items: center;
+    }
+    .warning-banner.visible { display: flex; }
+    .warning-banner svg { flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <svg class="header-logo" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2C12 7.5 16.5 12 22 12C16.5 12 12 16.5 12 22C12 16.5 7.5 12 2 12C7.5 12 12 7.5 12 2Z"
+              fill="url(#hg)"/>
+        <defs>
+          <linearGradient id="hg" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#38bdf8"/>
+            <stop offset="0.5" stop-color="#a855f7"/>
+            <stop offset="1" stop-color="#ec4899"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="header-title">GeminiTuner</span>
+    </div>
+    <span class="badge-live" id="liveBadge">FinOps On</span>
+  </div>
+
+  <!-- Warning Banner -->
+  <div class="warning-banner" id="warningBanner">
+    <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
+      <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+            stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span id="warningText">Quota is critically low!</span>
+  </div>
+
+  <!-- Quota Section -->
+  <div class="section-label">GEMINI QUOTA LIMITS</div>
+  <div class="quota-card">
+    <div class="quota-row">
+
+      <!-- Left: Short-term -->
+      <div class="quota-col">
+        <div class="quota-top">
+          <div class="char-wrap">
+            <!-- Gemini Sparkle (Dim/Tired) -->
+            <svg id="charLeft" viewBox="0 0 60 60">
+              <defs>
+                <linearGradient id="gdim" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#fbbf24"/>
+                  <stop offset="1" stop-color="#ea580c"/>
+                </linearGradient>
+              </defs>
+              <path d="M30 8 C30 22 18 30 4 30 C18 30 30 38 30 52 C30 38 42 30 56 30 C42 30 30 22 30 8Z"
+                    fill="url(#gdim)" filter="url(#glowDim)"/>
+              <filter id="glowDim">
+                <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <!-- Tired eyes -->
+              <ellipse cx="24" cy="30" rx="2.5" ry="1" fill="#fff" opacity="0.7"/>
+              <ellipse cx="36" cy="30" rx="2.5" ry="1" fill="#fff" opacity="0.7"/>
+            </svg>
+            <span class="char-badge" id="badgeLeft">5h</span>
+          </div>
+          <div class="quota-info">
+            <div class="quota-label">잔여량</div>
+            <div class="quota-val yellow" id="valLeft">—</div>
+          </div>
+        </div>
+        <div class="quota-bar-wrap">
+          <div class="quota-bar yellow" id="barLeft" style="width:0%"></div>
+        </div>
+        <div class="quota-reset" id="resetLeft">Loading...</div>
+      </div>
+
+      <div class="divider-v"></div>
+
+      <!-- Right: Long-term -->
+      <div class="quota-col">
+        <div class="quota-top">
+          <div class="char-wrap">
+            <!-- Gemini Sparkle (Bright/Happy) -->
+            <svg id="charRight" viewBox="0 0 60 60">
+              <defs>
+                <linearGradient id="gbright" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#38bdf8"/>
+                  <stop offset="0.5" stop-color="#a855f7"/>
+                  <stop offset="1" stop-color="#ec4899"/>
+                </linearGradient>
+              </defs>
+              <path d="M30 8 C30 22 18 30 4 30 C18 30 30 38 30 52 C30 38 42 30 56 30 C42 30 30 22 30 8Z"
+                    fill="url(#gbright)" filter="url(#glowBright)"/>
+              <filter id="glowBright">
+                <feGaussianBlur stdDeviation="2" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <!-- Happy eyes (^.^) -->
+              <path d="M21 29 Q24 25 27 29" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+              <path d="M33 29 Q36 25 39 29" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+              <!-- Mini sparkle dots -->
+              <circle cx="8"  cy="14" r="1.5" fill="#38bdf8" opacity="0.8"/>
+              <circle cx="50" cy="12" r="1.5" fill="#ec4899" opacity="0.8"/>
+            </svg>
+            <span class="char-badge" id="badgeRight">1w</span>
+          </div>
+          <div class="quota-info">
+            <div class="quota-label">잔여량</div>
+            <div class="quota-val purple" id="valRight">—</div>
+          </div>
+        </div>
+        <div class="quota-bar-wrap">
+          <div class="quota-bar purple" id="barRight" style="width:0%"></div>
+        </div>
+        <div class="quota-reset" id="resetRight">Loading...</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Cost Section -->
+  <div class="section-label">ESTIMATED COST</div>
+  <div class="cost-card">
+    <div class="cost-top">
+      <div>
+        <span class="cost-val" id="costVal">$0.00</span>
+        <span class="cost-krw" id="costKrw">≈ ₩0</span>
+      </div>
+      <div class="cost-limit-col">
+        <span class="cost-limit" id="costLimit">/ $5.00 monthly limit</span>
+        <span class="cost-limit-krw" id="costLimitKrw">≈ ₩6,900</span>
+      </div>
+    </div>
+    <div class="cost-bar-wrap">
+      <div class="cost-bar" id="costBar" style="width:0%"></div>
+    </div>
+    <div class="cost-meta">
+      <span id="tokenCount">0 tokens used</span>
+      <span id="costPct">0%</span>
+    </div>
+  </div>
+
+  <!-- Settings Section -->
+  <div class="section-label">API &amp; BUDGET SETTINGS</div>
+  <div class="settings-card">
+    <div class="settings-row">
+      <label>Google AI Studio API Key</label>
+      <input type="password" id="apiKeyInput" placeholder="AIza..." />
+    </div>
+    <div class="budget-row">
+      <div class="settings-row">
+        <label>Monthly Budget ($)</label>
+        <input type="number" id="budgetInput" placeholder="5.00" min="0" step="0.5" />
+      </div>
+      <div class="settings-row">
+        <label>Warn at (%)</label>
+        <input type="number" id="warnPctInput" placeholder="80" min="1" max="99" />
+      </div>
+    </div>
+    <div class="settings-row">
+      <label>환율 (1 USD = ₩)</label>
+      <input type="number" id="fxRateInput" placeholder="1380" min="1" step="1" />
+    </div>
+    <button class="btn-save" id="btnSave">Save Settings</button>
+    <div class="save-status" id="saveStatus"></div>
+    <div class="save-status" id="apiBillingNote" style="color:#64748b;margin-top:6px"></div>
+  </div>
+
+  <script src="currency.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
