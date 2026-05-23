@@ -7,8 +7,8 @@
 1. **개발자 계정**: https://chrome.google.com/webstore/devconsole  
    - 최초 등록 시 **일회성 등록비** (약 $5) 결제 필요
 2. **개인정보 처리방침 URL** (필수)  
-   - `store/privacy.html`을 GitHub Pages, Notion, 블로그 등에 올린 **공개 HTTPS URL**을 확보
-   - 스토어 등록 화면의 *Privacy policy* 항목에 붙여넣기
+   - **공개 URL:** https://cxr542.github.io/GeminiTuner/privacy.html  
+   - 스토어 등록 화면의 *Privacy policy* 항목에 위 주소 붙여넣기
 
 ## 1. 로컬에서 패키지 만들기
 
@@ -20,7 +20,7 @@ cd "G:\내 드라이브\VibeCoding\gemini_tuner"
 .\scripts\build-store-zip.ps1
 ```
 
-생성 파일: `dist/GeminiTuner-v1.0.0.zip`  
+생성 파일: `dist/GeminiTuner-v1.0.7.zip`  
 → **이 ZIP만** Developer Dashboard에 업로드합니다. (Gmail 스크립트·데모 HTML은 포함되지 않음)
 
 ## 2. 업로드 전 로컬 검증 (권장)
